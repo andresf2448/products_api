@@ -1,6 +1,5 @@
 class ProductsController < ApplicationController
   #we generate basic authentication
-  include ActionController::HttpAuthentication::Basic::ControllerMethods
   skip_before_action :authenticate, only: :index
   before_action :set_product, only: [:show, :update, :destroy]
 
@@ -49,5 +48,4 @@ class ProductsController < ApplicationController
   def product_params
     params.require(:product).permit(:name, :description, :price)
   end
-
 end

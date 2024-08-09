@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::API
+  include ActionController::HttpAuthentication::Basic::ControllerMethods
   before_action :authenticate
   
   private
