@@ -1,7 +1,7 @@
 class ProductsController < ApplicationController
   #we generate basic authentication
   include ActionController::HttpAuthentication::Basic::ControllerMethods
-  before_action :authenticate, except: :index
+  skip_before_action :authenticate, only: :index
   before_action :set_product, only: [:show, :update, :destroy]
 
   # GET /products
@@ -23,7 +23,7 @@ class ProductsController < ApplicationController
     if product.save
       render json: product, status: :created
     else
-      render json: product.errrors, status: :unprocessable_entity
+      render json: product.errors, status: :unprocessable_entity
     end
   end
 
@@ -50,9 +50,4 @@ class ProductsController < ApplicationController
     params.require(:product).permit(:name, :description, :price)
   end
 
-  def authenticate
-    authenticate_or_request_with_http_basic do |username, password|
-      username == ENV['ADMIN_USERNAME'] && password == ENV['ADMIN_PASSWORD']
-    end
-  end
 end

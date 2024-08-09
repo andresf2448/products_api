@@ -37,6 +37,23 @@ RSpec.describe "Products", type: :request do
 
       expect(response.status).to eq(201)
     end
+
+    it "duplicate product" do
+      params = { 
+        product: { 
+          name: "LLanta", 
+          description: "Test description", 
+          price: 10.0
+        }
+      }
+
+      expect {
+        post products_path, params: params, headers: auth_headers
+      }.to change(Product, :count).by(0)
+
+      expect(response.status).to eq(422)
+      expect(json["name"].first).to eq("has already been taken")
+    end
   end
 
   describe "PUT /products/:id" do
