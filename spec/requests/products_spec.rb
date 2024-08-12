@@ -5,10 +5,10 @@ RSpec.describe "Products", type: :request do
 
   describe "GET /products" do
     it "returns all products" do
-      get products_path
+      get products_path(limit: 10, page: 1)
 
       expect(response.status).to eq(200)
-      expect(json.count).to eq(1)
+      expect(json["products"].count).to eq(1)
     end
   end
 
@@ -62,7 +62,7 @@ RSpec.describe "Products", type: :request do
         product: { name: "Puerta" }
       }
 
-      put product_path(product), params: params, headers: auth_headers
+      post product_path(product), params: params, headers: auth_headers
 
       product.reload
       expect(product.name).to eq("Puerta")
@@ -76,7 +76,7 @@ RSpec.describe "Products", type: :request do
         delete product_path(product), headers: auth_headers
       }.to change(Product, :count).by(-1)
 
-      expect(response.status).to eq(204)
+      expect(response.status).to eq(200)
     end
   end
 end

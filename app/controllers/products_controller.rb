@@ -5,9 +5,17 @@ class ProductsController < ApplicationController
 
   # GET /products
   def index
-    products = Product.all
+    products = Product.all.order(:id)
+    total_pages = (products.count / params[:limit].to_f).ceil
 
-    render json: products, status: :ok
+    if params[:search].present?
+      products = products.where("name ILIKE ?", "%#{params[:search]}%")
+      total_pages = (products.count / params[:limit].to_i).ceil
+    end
+
+    products = products.offset((params[:page].to_i - 1) * params[:limit].to_i).limit(params[:limit].to_i)
+
+    render json: {products: products, total_pages: total_pages}, status: :ok
   end
 
   #GET /products/:id
@@ -38,6 +46,8 @@ class ProductsController < ApplicationController
   #DELETE /products/:id
   def destroy
     @product.destroy
+
+    render json: {message: "Product deleted successfully"}, status: :ok
   end
 
   private
